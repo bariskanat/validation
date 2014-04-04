@@ -1,9 +1,12 @@
 <?php
 
 namespace Acme\App;
+use Acme\App\Message;
+use Acme\App\Exceptions\ValidatorNotFoundException;
+use Acme\App\Contracts\ValidatorInterface;
 
-
-class Validator{
+class Validator implements ValidatorInterface
+{
 	
 	protected $error;
 	
@@ -11,51 +14,146 @@ class Validator{
 	
 	protected $data;
 	
-	public function validate(array $data,array $rule)
+	protected $message;
+	
+	protected $messageField=array();
+	
+	protected $lastfield=array();
+	
+	private $path="\\Acme\\App\\Rule\\";
+	
+	protected $classNamespace=[
+	   "numeric"=>["min","max","lessthan","greaterthan","equals","required","minlength","maxlength"],
+	   "email" =>["email"],
+	   "file" =>["isfile","ext","img","filesize"]
+	];
+	
+	
+	
+	public function __construct(MessageInterface $message=null)
 	{
-		//array("email" =>"required|min:8")
+		$this->message=(!is_null($message))?$message:new Message;
+	}
+	
+	public function make(array $data=array(),array $rule=array(),$messageField=array())
+	{
 		$this->rules=$this->parseRules($rule);
+				
 		$this->data=$data;
+			
+		$this->messageField=$messageField;	
+		
+		return $this;
+	}
+	
+
+	
+	public function getArgument($rule)
+	{
+		$pos=strpos($rule,":");
 		
 		
+		return ($pos!==false)?array(substr($rule,0,$pos),substr($rule,$pos+1)):array($rule,"");
 		
+	}
+	
+	
+	public function passes()
+	{
+	
+	 
 		
-		
-		foreach($rule as $key =>$value)
+		foreach($this->data as $attr => $value)
 		{
-			$rules=explode("|",$value);
+		    
 			
-			foreach($rules as $k=>$v)
+			if(isset($this->rules[$attr]))
 			{
-				//array(requireed,min:8)
 				
-				$pos=strpos($v,":");
-				
-				if($pos!==false)
-				{
-					
-					$arguments=substr($v,$pos+1);
-					$method=substr($v,0,$pos);
-				}
-				else {
-					$arguments="";
-					$method=$v;
-				}
-				
-				
-				$methodName="validate".ucfirst($method);
-				
-				$data=(isset($data[$key]))?$data[$key]:null;
-				
-				if(method_exists($this, $methodName) && !is_null($data));
-				{
-					$this->{$methodName}($key,$data,$arguments);
-				}
-				
+				$this->callIterateRule($attr,$this->rules[$attr]);
 			}
+					
+		}
+	
+		return ($this->countErrors())? true:false;
+	}
+	
+	
+	private function callIterateRule($subject,$rules)
+	{
+		foreach($rules as $rule)
+		{
+			$this->setLastFields($subject,$rule);			
 			
+			$this->startValidate();
+		}
+	}
+	
+	public function getValidatorClass($rule)
+	{
+		$class=$this->getClassName($rule);
+	
+		return (class_exists($class))?$class:false;
+	}
+	
+	
+	private function getClassName($class)
+	{
+		$class=$this->findClass($class);
+		return $this->path.ucfirst($class)."Validator";
+	}
+	
+	private function findClass($class)
+	{
+		foreach($this->classNamespace as $name => $classNameField)
+		{
+			if(in_array($class,$classNameField))
+			 return $name;
 		}
 		
+		throw new ValidatorNotFoundException();
+		
+	}
+	
+	private function setLastFields($subject,$rule)
+	{
+		list($rule,$argument)=$this->getArgument($rule);
+		$value=$this->getData($subject);
+		$this->lastfield=compact("rule","argument","subject","value");
+		
+	}
+	
+	public function getLastField($type=null)
+	{
+		if(!is_null($type))
+		{
+			return (isset($this->lastfield[$type]))?$this->lastfield[$type]:null;
+		}
+		return  $this->lastfield;
+	}
+	
+	private function startValidate()
+	{
+		
+		   if(!($result=$this->getValidatorClass($this->lastfield['rule'])))
+		   {
+		   	  throw new ValidatorNotFoundException();
+		   }			
+		    
+	       $this->callValidator($result);			 
+    }
+	
+	private function callValidator($result)
+	{
+		$class=new $result($this);		
+		
+		$class->isValid();	
+		
+	}
+	
+	public function run()
+	{
+		return (!$this->passes())?false:true;
 	}
 	
 	
@@ -68,6 +166,8 @@ class Validator{
 			$value=(is_string($value)) ? explode("|", $value):$value;
 		}
 		
+		
+		
 		return $rule;
 	}
 	
@@ -75,36 +175,23 @@ class Validator{
 	
 	public function setError($name,$error)
 	{
-		$this->error[$name]=$error;
+		$this->message->set($name,$error);
 	}
 	
-	public function getAllError()
+	
+	public function countErrors()
 	{
-		return $this->error;
+		 return count($this->message);
 	}
 	
-	public function validateEmail($item,$email,$arguments)
+	public function errors()
 	{
-		var_dump($email,$item,$arguments);
-		die;
-		
-	   if(!filter_var($email,FILTER_VALIDATE_EMAIL))
-	   {
-	   	  $this->error[$item]=$item. " is not valid";
-	   	  return false;
-	   }
-	   
-	   return true;
+		return ($this->countErrors())?$this->message:null;
 	}
 	
-	
-	public function validateRequired($data)
+	public function getData($item)
 	{
-		
-		
+		return (isset($this->data[$item])) ? $this->data[$item]:null;
 	}
-	
-	public function validateMin($data,$argument){}
-	
-	public function validateMax($data,$argument){}
+ 
 }

@@ -8,4 +8,8 @@ use Acme\App\Validator;
 $valid=new Validator;
 echo "<pre>";
 
-$valid->validate(array("email"=>"bkanat@gmail.com"),array("email"=>"email|required|min:3"));
+$valid->make(array("file"=>"baris.txt"),
+              array("file"=>"filesize:3000"))
+->run();
+//$errors=$valid->errors();
+
