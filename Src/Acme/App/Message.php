@@ -15,7 +15,7 @@ class Message implements Countable,MessageInterface,IteratorAggregate
 	
 	protected $messageType =false;
 	
-    public function all()
+	public function all()
 	{
 		return $this->message;
 	}
@@ -28,8 +28,8 @@ class Message implements Countable,MessageInterface,IteratorAggregate
 	
 	
 	
-     public  function set($name,$value)
-     {
+         public  function set($name,$value)
+         {
 		
 		if($this->messageType)
 		{
@@ -72,8 +72,8 @@ class Message implements Countable,MessageInterface,IteratorAggregate
 	 
 	 public function getIterator()
 	 {
-        return new \ArrayIterator($this->message);
-    }
+        	return new \ArrayIterator($this->message);
+         }
 	 
 	 
 	
