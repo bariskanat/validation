@@ -25,7 +25,7 @@ class Validator implements ValidatorInterface
 	protected $classNamespace=[
 	   "numeric"=>["min","max","lessthan","greaterthan","equals","required","minlength","maxlength"],
 	   "email" =>["email"],
-	   "file" =>["isfile","ext","img","filesize"]
+	   "file" =>["isfile","ext","filesize"]
 	];
 	
 	

@@ -35,10 +35,7 @@ use Acme\App\Exceptions\FileValidatorMethodNotFoundException;
 		
 		}
 	}
-	
-	
-	abstract protected function throwException();
-	
+		
 	
 	public function callMethod()
 	{

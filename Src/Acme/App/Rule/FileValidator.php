@@ -38,9 +38,7 @@ class FileValidator extends AbstractValidator implements SpecialValidatorInterfa
 	
 	protected function Validateext()
 	{
-		$argument=explode(",",$this->argument);
-		
-		var_dump();die;
+		$argument=explode(",",$this->argument);	
 		
 		if(!in_array($this->file->getExtension(),$argument))
 		{
@@ -52,7 +50,7 @@ class FileValidator extends AbstractValidator implements SpecialValidatorInterfa
 	
 	protected function Validatefilesize()
 	{
-		var_dump($this->value,$this->argument,$this->subject,$this->rule);
+		//var_dump($this->file->getSize());die;
 		if($this->file->getSize()>$this->argument)
 		{
 			$this->setMessage($this->subject,"{$this->subject} file size is higher than {$this->argument}");

@@ -13,16 +13,33 @@ class Message implements Countable,MessageInterface,IteratorAggregate
 	
 	private $message=array();
 	
+	protected $messageType =false;
+	
     public function all()
 	{
 		return $this->message;
 	}
 	
+	public function setMessageType($value=false)
+	{
+		$this->messageType=$value;
+	}
+	
+	
+	
 	
      public  function set($name,$value)
      {
 		
-		$this->message[$name][]=$value;
+		if($this->messageType)
+		{
+			$this->message[$name][]=$value;
+			return;
+		}
+		
+		$this->message[]=$value;
+		
+		
 	 }
 	 
 	 
