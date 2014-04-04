@@ -50,7 +50,7 @@ class FileValidator extends AbstractValidator implements SpecialValidatorInterfa
 	
 	protected function Validatefilesize()
 	{
-		//var_dump($this->file->getSize());die;
+		
 		if($this->file->getSize()>$this->argument)
 		{
 			$this->setMessage($this->subject,"{$this->subject} file size is higher than {$this->argument}");
