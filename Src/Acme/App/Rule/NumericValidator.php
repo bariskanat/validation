@@ -13,7 +13,7 @@ class NumericValidator extends AbstractValidator implements SpecialValidatorInte
 	private $messagemax =" field's length must be less than ";
 	
 	
-    public function isValid()
+        public function isValid()
 	{
 		
 		$this->fill();		
@@ -99,8 +99,8 @@ class NumericValidator extends AbstractValidator implements SpecialValidatorInte
 	}
 	
 	protected function Validatemaxlength()
-    {
-    	if(strlen(trim($this->value))>$this->argument)
+        {
+    	        if(strlen(trim($this->value))>$this->argument)
 		{
 			$this->setMessage($this->subject,$this->subject." field's length mustt be less than {$this->argument}");
 		}
