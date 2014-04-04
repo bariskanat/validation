@@ -63,12 +63,12 @@ class FileValidator extends AbstractValidator implements SpecialValidatorInterfa
 	}
 	
 	
-    private function isFile()
-	{
+         private function isFile()
+         {
 		if(!$this->file->isFile())
 			throw new FileNotFoundException();
 		return true;
 		
 	  
-    }
+        }
 }
