@@ -29,7 +29,7 @@ use Acme\App\Exceptions\FileValidatorMethodNotFoundException;
 			
 			   if(property_exists($this, $key))
 			   {
-			   		$this->{$key}=$value;
+			  	$this->{$key}=$value;
 			   }
 				 
 		
@@ -57,7 +57,7 @@ use Acme\App\Exceptions\FileValidatorMethodNotFoundException;
 	public function __construct(ValidatorInterface $validator =null)
 	{
 		$this->validator =(is_null($validator))? new Validator : $validator;
-    }
+        }
 	
 	
 	abstract public function isValid();
