@@ -18,7 +18,7 @@ class NumericValidator extends AbstractValidator implements SpecialValidatorInte
 		
 		$this->fill();		
 		
-		$methodName=$this->callMethod();	
+	        $this->callMethod();	
 	}
 	
 	
