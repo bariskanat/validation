@@ -52,7 +52,7 @@ class NumericValidator extends AbstractValidator implements SpecialValidatorInte
 		
 		$this->typeCastToInterger();
 		
-	    if($this->value>$this->argument)
+	        if($this->value>$this->argument)
 		{
 			$this->setMessage($this->subject,$this->subject.$this->messagemax.$this->value);
 		}
@@ -71,7 +71,7 @@ class NumericValidator extends AbstractValidator implements SpecialValidatorInte
 		
 		$this->typeCastToInterger();
 		
-	    if($this->value>$this->argument)
+	        if($this->value>$this->argument)
 		{
 			$this->setMessage($this->subject,"value of {$this->subject} must be greater than {$this->argument}");
 		}
